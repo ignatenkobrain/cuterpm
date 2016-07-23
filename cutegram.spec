@@ -6,22 +6,28 @@
 Name: cutegram
 Version: 3.0
 Release: 0.1git%{shortcommit0}%{?dist}
-Summary: Cutegram is a telegram client by Aseman Land
+Summary:      Cutegram is a telegram client by Aseman Land
 
-License: GPLv3+ and MIT
-URL: https://github.com/Aseman-Land/%{decname}/
-Source0: %{url}/archive/%{commit0}/%{name}-%{shortcommit0}.tar.gz
-Patch0: build_bin.patch
+# Bundled JS stuff:
+# js-linkify: MIT
+# js-twemoji: MIT and CC-BY-4.0
+License:        GPLv3+ and MIT and CC-BY-4.0
+URL:            https://github.com/Aseman-Land/%{decname}
+Source0:        %{url}/archive/%{commit0}/%{name}-%{shortcommit0}.tar.gz
+Patch0:         build_bin.patch
 
-BuildRequires: gcc-c++
+BuildRequires:  gcc-c++
 
-BuildRequires: qt5-qtbase-devel
-BuildRequires: qt5-qtquick1-devel
-BuildRequires: qt5-qtmultimedia-devel
+BuildRequires:  qt5-qtbase-devel
+BuildRequires:  qt5-qtquick1-devel
+BuildRequires:  qt5-qtmultimedia-devel
 
-BuildRequires: /usr/bin/desktop-file-validate
+BuildRequires:  /usr/bin/desktop-file-validate
 
-Requires: hicolor-icon-theme
+Provides:       bundled(js-linkify)
+Provides:       bundled(js-twemoji)
+
+Requires:       hicolor-icon-theme
 
 %description
 A different telegram client from Aseman team. Cutegram forked from Sigram
@@ -34,9 +40,9 @@ mkdir %{_target_platform}
 
 %build
 pushd %{_target_platform}
-  %qmake_qt5 PREFIX=%{_prefix} .. CONFIG+=binaryMode
-  %make_build
+  %qmake_qt5 PREFIX=%{_prefix} CONFIG+=binaryMode ..
 popd
+%make_build -C %{_target_platform}
 
 %install
 %make_install INSTALL_ROOT=%{buildroot} -C %{_target_platform}
@@ -58,7 +64,6 @@ fi
 
 %files
 %license LICENSE GPL.txt
-%doc README.md
 %{_bindir}/%{name}
 %{_datadir}/%{name}/
 %{_datadir}/icons/hicolor/*/apps/%{name}.png
